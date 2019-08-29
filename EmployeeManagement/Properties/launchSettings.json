@@ -1,0 +1,36 @@
+﻿{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:60859",
+      "sslPort": 0
+    }
+  },
+
+  //initially there are two profiles one is IIS Express and another EmployeeManagment
+  //when application runs it will pick this local settings(i.e IIS will run on 60859 port and EmployeeManagement on 5000)
+  "profiles": {
+    //this profile runs by default when we run our project from VS
+    "IIS Express": {
+      //this commandName along with .csproj </AspNetCoreHostingModel> element determines internal and external WebServer to be used values for commandName can be(IIS,IISExpress,Project)
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        // ASPNETCORE_ENVIRONMENT is a env variable
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "MyKey": "Value of MyKey from env variable(launchSettings.json)"
+      }
+    },
+    //this profile used when we run  EmployeeManagement project from ASP.Net Core CLI tool
+    "EmployeeManagement": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        //we can change this "ASPNETCORE_ENVIRONMENT" to stagging and QA also
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

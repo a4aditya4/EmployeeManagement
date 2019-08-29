@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<!--no longer required to unload project for editing project file in .net core-->
+  <PropertyGroup>
+    <!--netcoreapp2.2 is the target framework moniker(TFM) for this target framework-->
+    <!--TargetFramework tag Specifies the target framework for the application and to specify target framework we use target framework moniker(TFM)-->
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    
+    <!--AspNetCoreHostingModel tag specifies how the applicaion should be hosted i.e InProcess or OutOfProcess hosting-->
+    <!--CreateDefaultBuilder() Method calls UseIIS() method behind the scene and hosts the app inside of the IIS worker process
+    (w3wp.exe[iis] or iisexpress.exe[iisexpress])-->
+    <!--the default is OutOfProcess hosting-->
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--PackageReference tag used to include a reference to the nuget package that is installed for the application.as the nuget installed in this project references will increase-->
+    <!--for metapackage usually we donot add version no-->
+    <!--when the version no. is not specified,an implicit version is specified by sdk-->
+    <!--its recomended that rely on the implicit version rather than explicitly setting the version mo. on the package reference-->
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
+</Project>

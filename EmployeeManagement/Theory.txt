@@ -1,0 +1,159 @@
+﻿ASP.Net Core- Web framewok to create Data-driven web application 
+ASP.Net MVC
+ASP.Net Core Identity- for security
+Entity Framework Core- for data access
+
+What is ASP.Net Core?
+	It is a cross-platform, high performance,open source framework for building modern, cloud based, Internet-connected applications . It is a redesidgn of previous version(ASP.Net 4.x).it is initially known as ASP.NET 5.x
+
+ASP.Net Core Benefits and Features
+	1)Cross-Platform - ASP.Net Core application can be developed and run accross different platforms e.g. Windows,MacOS,Linux
+	2)Hosting- app can be hosted on IIS,Apache,Docker,Self-Hos in own process
+	3)One unified programming model for MVC and Web API- Both the MVC controller class and the ASP.Net web-api controller class inherits from the same controller base class and returns IActionResult.ViewResult(in MVC app) and JsonResult(in Web API) are the implementaion classes of IactionResult
+	4)Built in Dependency injection- in previous versions of asp.net the dependency injection is optional and to configure it we have to use external frameworks(ninject,structuremap)
+	5)Testability-Unit testing is easy
+	6)Open-Source- created and supported by vast community of open source developer
+	7)Modular - It provides modularity with middleware components, both the request and response pipelines are composed using the middleware components.rich set of built-in middleware components are provided out of the box.custom middleware components can also be created  
+
+ASP.Net Core web application templates in Visual studio
+	1)Empty -not much code,only setup to print hello world on browser
+	2)Web Application(MVC)-it contains models,views and controller folder.contains web specific things css,js,layout files in wwwroot folder
+	3)API template- contains things to create asp.net core restful http service.not needed to represents data so no css,js,viwes files.only controller class present
+	4)Web application template-uses razor pages framework to create web application.slimmer version of MVC fremework
+	5)Razor class library template-used to create reusable razor class library project.contains all reusable user interface pieces like DataModel ,PageModel, Controller,razor pages
+
+ASP.Net Core Project File
+	1).csproj and .vbproj depending on the programming language used
+	2)in .net framework we need to unload the project for editing project file.but in .net core no need to unload project file(right click on project mode + edit .csproj )
+	3)File or folder references are no longer included in project file(in previous versions when we add file or foledr in project tab ,its reference automatically added in .csproj)
+	4)The File System determines what files and folder belongs to the project(the files and folder present in root project folder are by default part of project and will be displayed in Solution explorer window)
+
+
+Nomencleture for TFM(Target Framework Moniker)
+    name=.NetFramework    Abbreviation=net         version=4.5.1   TFM=net451
+    name=.NetFramework    Abbreviation=net         version=4.7.2   TFM=net472
+    name=.NetCore         Abbreviation=netcoreapp  version=2.2     TFM=netcoreapp2.2
+	name=.NetCore         Abbreviation=netcoreapp  version=2.1     TFM=netcoreapp2.1
+
+MetaPackage- a metapackage has no content of its own .it just a list of dependencies(other package) e.g.Microsoft.AspNetCore.App
+
+IIS Express- it is a lightweight self contained version of iis optimised specially for developing application.iisexpress is not used in production, by default VisualStudio uses iisexpress to host and run application
+
+
+InProcess hosting model - hosts the app inside of the IIS worker process(w2wp.exe).InProcess hosting delivers significantly higher request throuput than OutOfProcess hosting.to configure InProcess hosting add <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel> in .csproj file .in InProcess hosting we do not have performance penalty of proxing request between internal and external WebServer.as per performance point of view inprocess hosting is better than OutOfProcess hosting.There is only one WebServer in InProcess Hosting Model.kestrel is not used in Inprocess hosting model
+
+OutOfProcess hosting model - forwards web request to a backend ASP.NET core app running the kestrel server.with OutOfProcess hosting has 2 WebServer internal(kestrel) and external(IIS ,Nginx or Apache depends on OS).
+
+there are two ways to host app in OutOfProcess Hosting
+1)add <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel> in .csproj file 
+2)Remove <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel> element from .csproj file(by default OutOfProcess hosting model)
+
+
+Comparison between InProcess and OutOfProcess hosting
+Process Name - 1) w3wp.exe(IIS) or iisexpress.exe				1) dotnet.exe
+No. of WebServer- 2)One											2)Two
+
+there are two ways to ue kestrel server(always kestrel is the only server to host application)
+1)Kestrel can be used as the internet facing web server(in this external WebServer is not used,kestrel is used to face incoming http request)
+2)kestrel can be used in combination with reverse proxy server(IIS,Nginx,Apache) .in this type kestrel not face internet request directly it comes from reverse proxy server(i.eIIS,Nginx,Apache)
+
+dotnet core CLI Tool
+it is used to run ,build and create dotnet core app on any platform similar to Visual studio to use this use command- 
+"dotnet --help" in cmd
+first change the directory to project folder to use dotnet core cli. command-cd c:\Project\EmployeeManagement
+while running application through dotnet core CLI tool the "<AspNetCoreHostingModel></AspNetCoreHostingModel>" setting in .csproj file is ignored and the kestrel is the only server to use(hence worker process is dotnet instead of reverse proxy server)
+
+
+
+If kestrel is used as web server so Why we need Reverse proxy server(between client and kestrel server)?
+ans- Bcoz this reverse proxy server provide extra layer of security and configuration.it better integrate with are existing infrastructure(i.e. OS).it can also be used for load balancing
+
+
+launchSettings.json File(in Properties folder)
+	this file contains launch profiles,the profiles to launch and run ASP.Net core project on local development m/c.Settings in this files are used only in local development and not needed for publishing application.settings of this files used ,when the application is runned from VS or from dotnet CLI tool
+
+	project tab >> Properties >> Debug
+
+commandName				AspNetCoreHostingModel					Internal-WebServer				External-WebServer
+Project					Hosting settings ignored							only one WebServer-Kestrel
+IISExpress					InProcess											only one WebServer-IIS Express
+IISExpress					OutOfProcess						   Kestrel						IIS Express(oly as reverse proxy)
+IIS					          InProcess											only one WebServer-IIS
+
+Configuration sources in ASP.NET Core(settings used to configure application)//order is important
+1)Files(appsettings.json,appsettings.{Environment}.json)
+2)User secrets
+3)Environmental variables(launchSettings.json)
+4)command-line arguments(ASP.Net Core CLI Tool command-dotnet run MYKey="Value from command line")
+
+To access configuration information
+IConfiguration Service- this is already setup in ASP.Net core to read config settings from all different configuration sources (Inject IConfiguration service in startup class)
+    IConfiguration service read settings in order of the same setting comming from different configuration sources 
+
+appsettings.json File
+	settings are used for publish application,usually application configuartion settings are stored in this file.we can have environment specific appsettings.json file(i.e appsettings.staggings.json for stagging environment)<in addition to appsettings.json file, we can have other configuration sources like environment variables,user secrets,command line arguments or the custom configuration sources>
+	In previous versions of .net ,the application configuration settings are stored in web.config(DB connection string)
+
+Environment Variable
+	In ASP.Net Core env variable can be stored in launchSettings.json
+
+
+Middleware- It is a piece of software that can handle HTTP request/response.used to setup request processing pipelines,pipelines that how request processed.Request processing pipelines are configured in startup.cs at Configure() method .
+	Middleware component has the access to incoming request and outgoing response, so one middleware component may process incoming request and pass that request to next piece of middleware in pipeline(piece of middleware can take decision to pass or to block requst to next middleware component).middleware component executed in order they added in pipeline.this middleware components are available as Nuget packages(e.g.Logging,static files,MVC,authenticatio,authorisation).we have complete control over configuring request processing pipeline by adding or removing middleware componenets(from memory and performance stand point of view ,we only pay for the middleware which is in our project) e.g by default UseDeveloperExceptionPage() and   app.Run() middleware component added in pipeline
+
+	Middleware Summary
+	1)has access to both request and response
+	2)may simply pass the request to next middleware
+	3)may process and then pass the request to next middleware
+	4)may handle the request and short-circuit the rest pipeline
+	5)may process the outgoing response
+	6)middlewares are executed in order they are added in pipeline
+
+
+What is Short-circuiting of request pipeline?
+middleware component may take decision to skip next middleware component,it is called as short-circuiting of pipeline
+
+
+	MiddleWare component of any type(different purpose)
+	1)to authenticate user
+	2)handle error
+	3)to serve static files(css,js,images etc)
+
+Configure ASP.Net Core application to serve static files
+	1)The default directory for static files is wwwroot folder
+	2)By default an ASP.Net Core application will not serve static files
+	3)To serve static files UseStaticFiles() middleware is required
+	4)To serve a default file UseDefaultFiles() middleware is required
+	5)UseDeafultFiles() must be registered before UseStaticFiles()
+	6)UseFileServer() comines the functionality of UseStaticFiles(),UseDeafultFiles and UseDirectoryBrowser() middleware
+
+Navigate Request to default page?
+use app.UseDefaultFiles() middleware and file name should be default.html/default.htm/index.htm/index.html
+
+
+DeveloperExceptionPage middleware
+1)To enable plug in UseDeveloperExceptionPage() middleware method in pipeline
+2)Must be plugged in the Pipeline as early as possible
+3)Contains stack trace,Query Strig,Cookies, and HttP headers
+4)For Customizing use DeveloperExceptionPageOptions object
+
+
+wwwroot folder(content root folder)-In ASP.net core all static files are by default served by this folder 
+
+Environment Variable
+1)ASPNETCORE_ENVIRONMENT variablesets the Runtime Environment
+2)On Development m/c we set it in launchsettings.json file
+3)on stagging or production server we set in the operating system
+4)Use IHostingEnvironment injected in Configure() method of Startup.cs class service to access the runtime Environment
+5)Runtime environment defaults to production if not set explicitly 
+6)In addition to standard environments(Development,Staging,Production),custom environments (UAT,QA etc) are also supported..to use this use IsEnvironment("EnvironmentName") method in startup.cs file
+
+What is MVC ?
+MVC ia an architectural design pattern for implementing User Interface Layer of an application
+1)Model : Set of classes that represents data + the logic to manage that data
+2)View : Contains the display logic to present the model data provided to it by the controller
+3) Controller : Handles the HTTP request,work with the model,and select a view to render that model
+
+	tab 2 times
+	ctrl + (>) 2 times
+	ctrl + (>)
